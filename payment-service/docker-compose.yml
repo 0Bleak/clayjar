@@ -1,0 +1,58 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres-payment-service
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: clayjar
+    volumes:
+      - postgres-payment-data:/var/lib/postgresql/data
+    networks:
+      - payment-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: payment-service
+    restart: unless-stopped
+    ports:
+      - "8084:8084"
+    environment:
+      SERVER_PORT: "8084"
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/clayjar?sslmode=disable
+      KAFKA_BROKERS: shared-kafka:9092
+      KAFKA_TOPIC: payment-events
+      CONSUL_ADDR: consul-server:8500
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - payment-network
+      - shared-kafka-network
+      - consul-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8084/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  payment-network:
+    driver: bridge
+  shared-kafka-network:
+    external: true
+  consul-network:
+    external: true
+
+volumes:
+  postgres-payment-data:

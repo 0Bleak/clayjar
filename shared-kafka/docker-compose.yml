@@ -1,0 +1,58 @@
+services:
+  kafka:
+    image: apache/kafka:4.1.1
+    container_name: shared-kafka
+    hostname: shared-kafka
+    ports:
+      - "9092:9092"
+      - "19092:19092"
+    environment:
+      KAFKA_CLUSTER_ID: "PKFpmUiNSOyhc_fn7Sy6Rg"
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,EXTERNAL://0.0.0.0:19092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://shared-kafka:9092,EXTERNAL://localhost:19092
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@shared-kafka:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    volumes:
+      - shared-kafka-data:/var/lib/kafka/data
+    networks:
+      - shared-kafka-network
+    healthcheck:
+      test: /opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server shared-kafka:9092
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8090:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: shared-kafka-cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: shared-kafka:9092
+      DYNAMIC_CONFIG_ENABLED: 'true'
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - shared-kafka-network
+    restart: unless-stopped
+
+networks:
+  shared-kafka-network:
+    name: shared-kafka-network
+    driver: bridge
+
+volumes:
+  shared-kafka-data:
+    name: shared-kafka-data

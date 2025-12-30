@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres-inventory-service
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: clayjar
+    volumes:
+      - postgres-inventory-data:/var/lib/postgresql/data
+    networks:
+      - inventory-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  inventory-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: inventory-service
+    restart: unless-stopped
+    ports:
+      - "8083:8083"
+    environment:
+      SERVER_PORT: "8083"
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/clayjar?sslmode=disable
+      KAFKA_BROKERS: shared-kafka:9092
+      KAFKA_TOPIC: inventory-events
+      CONSUL_ADDR: consul-server:8500
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8083/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - inventory-network
+      - shared-kafka-network
+      - consul-network
+
+networks:
+  inventory-network:
+    driver: bridge
+  shared-kafka-network:
+    external: true
+  consul-network:
+    external: true
+
+volumes:
+  postgres-inventory-data:
