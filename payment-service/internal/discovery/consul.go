@@ -2,6 +2,7 @@ package discovery
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/hashicorp/consul/api"
 )
@@ -23,12 +24,19 @@ func NewConsulClient(address string) (*ConsulClient, error) {
 }
 
 func (c *ConsulClient) RegisterService(serviceID, serviceName, port string) error {
+	// Get the container hostname for health checks
+	hostname := os.Getenv("HOSTNAME")
+	if hostname == "" {
+		hostname = serviceName
+	}
+
 	registration := &api.AgentServiceRegistration{
-		ID:   serviceID,
-		Name: serviceName,
-		Port: parsePort(port),
+		ID:      serviceID,
+		Name:    serviceName,
+		Address: hostname,
+		Port:    parsePort(port),
 		Check: &api.AgentServiceCheck{
-			HTTP:                           fmt.Sprintf("http://%s:%s/health", serviceID, port),
+			HTTP:                           fmt.Sprintf("http://%s:%s/health", hostname, port),
 			Interval:                       "10s",
 			Timeout:                        "5s",
 			DeregisterCriticalServiceAfter: "30s",
