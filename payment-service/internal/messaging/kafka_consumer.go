@@ -7,12 +7,16 @@ import (
 	"log"
 
 	"github.com/0Bleak/payment-service/internal/models"
-	"github.com/0Bleak/payment-service/internal/service"
 	"github.com/segmentio/kafka-go"
 )
 
+// OrderEventHandler defines the interface for handling order events
+type OrderEventHandler interface {
+	HandleOrderEvent(ctx context.Context, event *models.OrderEvent) error
+}
+
 type KafkaConsumer interface {
-	ConsumeOrderEvents(ctx context.Context, paymentService service.PaymentService) error
+	ConsumeOrderEvents(ctx context.Context, handler OrderEventHandler) error
 	Close() error
 }
 
@@ -34,7 +38,7 @@ func NewKafkaConsumer(brokers []string, topic, groupID string) KafkaConsumer {
 	}
 }
 
-func (c *kafkaConsumer) ConsumeOrderEvents(ctx context.Context, paymentService service.PaymentService) error {
+func (c *kafkaConsumer) ConsumeOrderEvents(ctx context.Context, handler OrderEventHandler) error {
 	for {
 		msg, err := c.reader.ReadMessage(ctx)
 		if err != nil {
@@ -49,7 +53,7 @@ func (c *kafkaConsumer) ConsumeOrderEvents(ctx context.Context, paymentService s
 
 		log.Printf("Received order event: %s for order %d", orderEvent.Type, orderEvent.OrderID)
 
-		if err := paymentService.HandleOrderEvent(ctx, &orderEvent); err != nil {
+		if err := handler.HandleOrderEvent(ctx, &orderEvent); err != nil {
 			log.Printf("Failed to handle order event: %v", err)
 		}
 	}
