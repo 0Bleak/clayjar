@@ -3,11 +3,13 @@ services:
     image: mongo:7.0
     container_name: mongo-jar-service
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - mongo-data:/data/db
     networks:
       - jar-network
+      - shared-kafka-network
+      - consul-network
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
       interval: 10s
@@ -25,11 +27,12 @@ services:
       - "8080:8080"
     environment:
       SERVER_PORT: "8080"
-      MONGO_URI: mongodb://mongo:27017
+      MONGO_URI: mongodb://mongo-jar-service:27017
       MONGO_DB: clayjar
       KAFKA_BROKERS: shared-kafka:9092
       KAFKA_TOPIC: jar-events
       CONSUL_ADDR: consul-server:8500
+      HOSTNAME: jar-service
     depends_on:
       mongo:
         condition: service_healthy
@@ -38,7 +41,7 @@ services:
       - shared-kafka-network
       - consul-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--tries=1", "-O", "/dev/null", "http://localhost:8080/health"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "-O", "/dev/null", "http://localhost:8080/health"]
       interval: 10s
       timeout: 5s
       retries: 3
