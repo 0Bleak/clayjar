@@ -16,6 +16,7 @@
       },
       "fieldConfig": {
         "defaults": {
+          "unit": "none",
           "color": {
             "mode": "thresholds"
           },
@@ -52,12 +53,7 @@
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 0,
-        "y": 0
-      },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
       "id": 1,
       "options": {
         "colorMode": "background",
@@ -92,6 +88,7 @@
       },
       "fieldConfig": {
         "defaults": {
+          "unit": "none",
           "color": {
             "mode": "thresholds"
           },
@@ -128,12 +125,7 @@
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 4,
-        "y": 0
-      },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
       "id": 2,
       "options": {
         "colorMode": "background",
@@ -168,6 +160,7 @@
       },
       "fieldConfig": {
         "defaults": {
+          "unit": "none",
           "color": {
             "mode": "thresholds"
           },
@@ -204,12 +197,7 @@
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 8,
-        "y": 0
-      },
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 0 },
       "id": 3,
       "options": {
         "colorMode": "background",
@@ -244,6 +232,7 @@
       },
       "fieldConfig": {
         "defaults": {
+          "unit": "none",
           "color": {
             "mode": "thresholds"
           },
@@ -280,12 +269,7 @@
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 12,
-        "y": 0
-      },
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 0 },
       "id": 4,
       "options": {
         "colorMode": "background",
@@ -320,6 +304,7 @@
       },
       "fieldConfig": {
         "defaults": {
+          "unit": "none",
           "color": {
             "mode": "thresholds"
           },
@@ -356,12 +341,7 @@
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 16,
-        "y": 0
-      },
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 0 },
       "id": 5,
       "options": {
         "colorMode": "background",
@@ -396,6 +376,7 @@
       },
       "fieldConfig": {
         "defaults": {
+          "unit": "none",
           "color": {
             "mode": "thresholds"
           },
@@ -432,12 +413,7 @@
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 20,
-        "y": 0
-      },
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 0 },
       "id": 6,
       "options": {
         "colorMode": "background",
@@ -519,12 +495,7 @@
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 4
-      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
       "id": 7,
       "options": {
         "legend": {
@@ -607,12 +578,7 @@
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 4
-      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
       "id": 8,
       "options": {
         "legend": {
@@ -695,12 +661,7 @@
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 12
-      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
       "id": 9,
       "options": {
         "legend": {
@@ -722,11 +683,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "expr": "rate(container_network_receive_bytes_total{container_label_com_docker_compose_service=~\"api-gateway|jar-service|user-service|order-service|inventory-service|payment-service\"}[1m])",
-          "legendFormat": "{{container_label_com_docker_compose_service}} RX",
+          "legendFormat": "{{container_label_com_docker_compose_service}}",
           "refId": "A"
         }
       ],
-      "title": "Network Receive (bytes/sec)",
+      "title": "Container Network Receive",
       "type": "timeseries"
     },
     {
@@ -783,12 +744,7 @@
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 12
-      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
       "id": 10,
       "options": {
         "legend": {
@@ -810,11 +766,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "expr": "rate(container_network_transmit_bytes_total{container_label_com_docker_compose_service=~\"api-gateway|jar-service|user-service|order-service|inventory-service|payment-service\"}[1m])",
-          "legendFormat": "{{container_label_com_docker_compose_service}} TX",
+          "legendFormat": "{{container_label_com_docker_compose_service}}",
           "refId": "A"
         }
       ],
-      "title": "Network Transmit (bytes/sec)",
+      "title": "Container Network Transmit",
       "type": "timeseries"
     },
     {
@@ -871,12 +827,7 @@
         },
         "overrides": []
       },
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 20
-      },
+      "gridPos": { "h": 8, "w": 12, "x": 24, "y": 4 },
       "id": 11,
       "options": {
         "legend": {
@@ -897,30 +848,29 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "probe_duration_seconds",
+          "expr": "probe_duration_seconds{instance=~\".*\"}",
           "legendFormat": "{{instance}}",
           "refId": "A"
         }
       ],
-      "title": "Health Check Response Time",
+      "title": "Response Time",
       "type": "timeseries"
     }
   ],
-  "refresh": "5s",
-  "schemaVersion": 38,
+  "refresh": "10s",
+  "schemaVersion": 42,
   "style": "dark",
-  "tags": ["clayjar", "microservices"],
+  "tags": [],
   "templating": {
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "",
-  "title": "Clayjar Services Dashboard",
-  "uid": "clayjar-services",
-  "version": 1,
-  "weekStart": ""
+  "timezone": "browser",
+  "title": "Docker Container Dashboard",
+  "uid": "FYHApBmaz",
+  "version": 5
 }
