@@ -545,8 +545,8 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "rate(container_cpu_usage_seconds_total{name=~\"api-gateway|jar-service|user-service|order-service|inventory-service|payment-service\"}[1m])",
-          "legendFormat": "{{name}}",
+          "expr": "rate(container_cpu_usage_seconds_total{container_label_com_docker_compose_service=~\"api-gateway|jar-service|user-service|order-service|inventory-service|payment-service\"}[1m])",
+          "legendFormat": "{{container_label_com_docker_compose_service}}",
           "refId": "A"
         }
       ],
@@ -633,8 +633,8 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "container_memory_usage_bytes{name=~\"api-gateway|jar-service|user-service|order-service|inventory-service|payment-service\"}",
-          "legendFormat": "{{name}}",
+          "expr": "container_memory_usage_bytes{container_label_com_docker_compose_service=~\"api-gateway|jar-service|user-service|order-service|inventory-service|payment-service\"}",
+          "legendFormat": "{{container_label_com_docker_compose_service}}",
           "refId": "A"
         }
       ],
@@ -721,8 +721,8 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "rate(container_network_receive_bytes_total{name=~\"api-gateway|jar-service|user-service|order-service|inventory-service|payment-service\"}[1m])",
-          "legendFormat": "{{name}} RX",
+          "expr": "rate(container_network_receive_bytes_total{container_label_com_docker_compose_service=~\"api-gateway|jar-service|user-service|order-service|inventory-service|payment-service\"}[1m])",
+          "legendFormat": "{{container_label_com_docker_compose_service}} RX",
           "refId": "A"
         }
       ],
@@ -809,8 +809,8 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "rate(container_network_transmit_bytes_total{name=~\"api-gateway|jar-service|user-service|order-service|inventory-service|payment-service\"}[1m])",
-          "legendFormat": "{{name}} TX",
+          "expr": "rate(container_network_transmit_bytes_total{container_label_com_docker_compose_service=~\"api-gateway|jar-service|user-service|order-service|inventory-service|payment-service\"}[1m])",
+          "legendFormat": "{{container_label_com_docker_compose_service}} TX",
           "refId": "A"
         }
       ],
