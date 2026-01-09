@@ -1,0 +1,97 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+
+  - job_name: 'api-gateway'
+    metrics_path: /health
+    static_configs:
+      - targets: ['api-gateway:8000']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        replacement: 'api-gateway'
+
+  - job_name: 'jar-service'
+    metrics_path: /health
+    static_configs:
+      - targets: ['jar-service:8080']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        replacement: 'jar-service'
+
+  - job_name: 'user-service'
+    metrics_path: /health
+    static_configs:
+      - targets: ['user-service:8081']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        replacement: 'user-service'
+
+  - job_name: 'order-service'
+    metrics_path: /health
+    static_configs:
+      - targets: ['order-service:8082']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        replacement: 'order-service'
+
+  - job_name: 'inventory-service'
+    metrics_path: /health
+    static_configs:
+      - targets: ['inventory-service:8083']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        replacement: 'inventory-service'
+
+  - job_name: 'payment-service'
+    metrics_path: /health
+    static_configs:
+      - targets: ['payment-service:8084']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        replacement: 'payment-service'
+
+  - job_name: 'consul'
+    metrics_path: /v1/agent/metrics
+    params:
+      format: ['prometheus']
+    static_configs:
+      - targets: ['consul-server:8500']
+
+  - job_name: 'blackbox-http'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - http://api-gateway:8000/health
+          - http://jar-service:8080/health
+          - http://user-service:8081/health
+          - http://order-service:8082/health
+          - http://inventory-service:8083/health
+          - http://payment-service:8084/health
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox:9115
